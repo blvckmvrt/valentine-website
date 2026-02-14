@@ -1,85 +1,395 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>С Днем Святого Валентина!</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #ffcccb;
-            color: #d50000;
-            text-align: center;
-            overflow: hidden;
-            animation: backgroundColorChange 10s infinite alternate;
-        }
-        h1 {
-            margin-top: 100px;
-            font-size: 48px;
-            animation: fadeIn 2s ease-in-out;
-        }
-        .heart {
-            font-size: 100px;
-            animation: bounce 1s infinite;
-        }
-        p {
-            font-size: 24px;
-            animation: fadeIn 3s ease-in-out;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>С днём святого Валентина ❤️</title>
+  <!-- Романтичные шрифты -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        /* Анимации */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-30px);
-            }
-            60% {
-                transform: translateY(-15px);
-            }
-        }
-        @keyframes backgroundColorChange {
-            0% { background-color: #ffcccb; }
-            50% { background-color: #ff99cc; }
-            100% { background-color: #ffb3e6; }
-        }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(145deg, #ffb6c1 0%, #ffc0cb 35%, #ffdde1 100%);
+      min-height: 100vh;
+      overflow: hidden; /* убираем скролл, чтобы сосредоточиться на анимации */
+    }
 
-        /* Кнопка */
-        .button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 20px;
-            color: white;
-            background-color: #d50000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            animation: pulse 1.5s infinite alternate;
-        }
+    /* Холст с сердечками занимает весь экран, кликабелен для интерактива */
+    #heartCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 1;
+      pointer-events: auto; /* будем ловить клики для добавления сердечек */
+    }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
-        }
+    /* Основной контент поверх канваса */
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
+      pointer-events: none; /* чтобы клики проходили сквозь контейнер к канвасу, но элементы внутри можно активировать */
+    }
 
-        .button:hover {
-            background-color: #c70000;
-        }
-    </style>
+    .content > * {
+      pointer-events: auto; /* все прямые потомки снова кликабельны */
+    }
+
+    /* Главный заголовок с мерцанием */
+    .title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(3rem, 12vw, 6rem);
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255, 105, 135, 0.8), 2px 2px 15px rgba(0,0,0,0.2);
+      margin-bottom: 0.25rem;
+      animation: softGlow 3s ease-in-out infinite;
+      transform-origin: center;
+      letter-spacing: 2px;
+    }
+
+    @keyframes softGlow {
+      0% { text-shadow: 0 0 10px #ff9a9e, 0 0 20px #ff9a9e, 2px 2px 15px rgba(0,0,0,0.1); }
+      50% { text-shadow: 0 0 20px #ff6f91, 0 0 40px #ff6f91, 2px 2px 20px rgba(0,0,0,0.2); }
+      100% { text-shadow: 0 0 10px #ff9a9e, 0 0 20px #ff9a9e, 2px 2px 15px rgba(0,0,0,0.1); }
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: #fff4f4;
+      text-shadow: 1px 1px 8px rgba(199, 64, 88, 0.5);
+      margin-bottom: 2rem;
+      font-weight: 300;
+      max-width: 600px;
+      backdrop-filter: blur(1px);
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Кнопка в нежных тонах */
+    .btn {
+      background: #ff4d6d;
+      border: 2px solid rgba(255, 255, 255, 0.7);
+      color: white;
+      padding: 16px 42px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      border-radius: 60px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 77, 109, 0.5);
+      transition: transform 0.25s ease, box-shadow 0.3s ease, background 0.2s;
+      letter-spacing: 2px;
+      backdrop-filter: blur(5px);
+      margin-top: 20px;
+      border: none;
+      outline: none;
+    }
+
+    .btn:hover {
+      transform: scale(1.07) translateY(-3px);
+      box-shadow: 0 15px 30px rgba(255, 77, 109, 0.8);
+      background: #ff3355;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Скрытое сообщение — появляется с элегантной анимацией */
+    .message {
+      background: rgba(255, 250, 240, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 30px 40px;
+      border-radius: 50px 20px 50px 20px;
+      max-width: 600px;
+      margin-top: 40px;
+      color: #b13e4b;
+      font-size: 2rem;
+      font-family: 'Dancing Script', cursive;
+      box-shadow: 0 20px 40px rgba(139, 0, 0, 0.3), 0 0 0 2px rgba(255, 255, 255, 0.5) inset;
+      transition: opacity 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.7s ease;
+      opacity: 0;
+      transform: scale(0.8) translateY(30px);
+      pointer-events: none;
+      line-height: 1.4;
+      border: 3px solid white;
+    }
+
+    .message.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+
+    .message p {
+      margin: 10px 0;
+    }
+
+    .message small {
+      font-size: 1.2rem;
+      font-family: 'Montserrat', sans-serif;
+      display: block;
+      margin-top: 20px;
+      color: #7a3b46;
+      opacity: 0.9;
+    }
+
+    /* Эффект для дополнительной романтики — падающие лепестки (заглушка, но сердечки уже есть) */
+    /* адаптация для маленьких экранов */
+    @media (max-width: 500px) {
+      .title {
+        font-size: 3.5rem;
+      }
+      .subtitle {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+      }
+      .btn {
+        padding: 12px 30px;
+        font-size: 1.1rem;
+      }
+      .message {
+        font-size: 1.5rem;
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="content">
-        <h1>С Днем Святого Валентина!</h1>
-        <div class="heart">❤️</div>
-        <p>Поздравляю всех с этим прекрасным днем!</p>
-        <button class="button" onclick="alert('С любовью!')">Нажми на меня!</button>
+
+  <canvas id="heartCanvas"></canvas>
+
+  <div class="content">
+    <h1 class="title">С днём святого Валентина!</h1>
+    <p class="subtitle">Пусть это сердце бьётся в унисон с твоим ❤️</p>
+    <button class="btn" id="openMessage">Открыть послание</button>
+    <div class="message" id="valentineMessage">
+      <p>Ты — самое тёплое, что есть в моей жизни.</p>
+      <p>Спасибо, что ты есть. С праздником, любимый человек!</p>
+      <small>✨ целую, твой(я) навсегда ✨</small>
     </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- НАСТРОЙКИ ----------
+      const canvas = document.getElementById('heartCanvas');
+      const ctx = canvas.getContext('2d');
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      
+      // Массив частиц-сердечек
+      let particles = [];
+      const PARTICLE_COUNT = 90; // общее количество сердечек
+      
+      // Цветовая гамма (романтичные оттенки)
+      const colors = [
+        '#ff4d6d', '#ff6b8b', '#ff8fa3', '#ffb3c6', 
+        '#fba0a0', '#f28b82', '#f4acb7', '#e5989b'
+      ];
+
+      // ---------- ФУНКЦИЯ РИСОВАНИЯ СЕРДЦА (Path2D) ----------
+      function drawHeart(x, y, size, color, opacity, rotation) {
+        // масштабируем сердце: базовый path примерно 100x80, приводим к нужному size
+        const scale = size / 55; // чтобы размер был адекватным (при size=40 будет ~0.73)
+        
+        // Создаём путь сердца (стандартная форма)
+        const heartPath = new Path2D();
+        heartPath.moveTo(10, 30);
+        heartPath.quadraticCurveTo(10, 10, 30, 10); // левая верхняя дуга
+        heartPath.quadraticCurveTo(50, 10, 50, 30); // правая верхняя дуга
+        heartPath.quadraticCurveTo(50, 10, 70, 10); 
+        heartPath.quadraticCurveTo(90, 10, 90, 30);
+        heartPath.quadraticCurveTo(90, 50, 50, 80); // нижняя часть
+        heartPath.quadraticCurveTo(10, 50, 10, 30);
+        heartPath.closePath();
+        
+        // Трансформации для позиции, вращения и масштаба
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rotation);
+        ctx.scale(scale, scale);
+        
+        // Заливка с прозрачностью
+        ctx.fillStyle = color;
+        ctx.globalAlpha = opacity;
+        ctx.fill(heartPath);
+        
+        // Белая окантовка для нежности
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.globalAlpha = Math.min(opacity + 0.2, 1);
+        ctx.stroke(heartPath);
+        
+        ctx.restore();
+      }
+
+      // ---------- ИНИЦИАЛИЗАЦИЯ ЧАСТИЦ ----------
+      function initParticles(particlesCount, w, h) {
+        const newParticles = [];
+        for (let i = 0; i < particlesCount; i++) {
+          newParticles.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.6,  // небольшая скорость
+            vy: (Math.random() - 0.5) * 0.6,
+            size: 20 + Math.random() * 30,    // от 20 до 50 пикселей
+            color: colors[Math.floor(Math.random() * colors.length)],
+            opacity: 0.3 + Math.random() * 0.6, // 0.3 - 0.9
+            rotation: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.02,
+          });
+        }
+        return newParticles;
+      }
+
+      // ---------- ОБНОВЛЕНИЕ ПОЗИЦИЙ И ОТРАЖЕНИЕ ОТ ГРАНИЦ ----------
+      function updateParticles(particlesArr, w, h) {
+        for (let p of particlesArr) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rotation += p.rotSpeed;
+
+          // Границы с отскоком (упругие)
+          if (p.x < 0 || p.x > w) {
+            p.vx *= -1;
+            p.x = Math.min(Math.max(p.x, 0), w);
+          }
+          if (p.y < 0 || p.y > h) {
+            p.vy *= -1;
+            p.y = Math.min(Math.max(p.y, 0), h);
+          }
+        }
+      }
+
+      // ---------- ОТРИСОВКА ВСЕГО ----------
+      function drawParticles(particlesArr) {
+        ctx.clearRect(0, 0, width, height);
+        for (let p of particlesArr) {
+          drawHeart(p.x, p.y, p.size, p.color, p.opacity, p.rotation);
+        }
+      }
+
+      // ---------- АНИМАЦИОННЫЙ ЦИКЛ ----------
+      function animate() {
+        updateParticles(particles, width, height);
+        drawParticles(particles);
+        requestAnimationFrame(animate);
+      }
+
+      // ---------- ОБРАБОТКА РЕСАЙЗА ----------
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        // Пересоздаём частицы, чтобы они равномерно заполнили новое окно
+        particles = initParticles(PARTICLE_COUNT, width, height);
+      }
+      window.addEventListener('resize', () => {
+        // Чтобы не вызывать слишком часто
+        clearTimeout(window.resized);
+        window.resized = setTimeout(resizeCanvas, 100);
+      });
+
+      // ---------- ИНТЕРАКТИВ: ПОЯВЛЕНИЕ НОВЫХ СЕРДЕЧЕК ПО КЛИКУ ----------
+      function addHeartBurst(x, y, count = 10) {
+        for (let i = 0; i < count; i++) {
+          // Генерируем частицу в радиусе 40px от места клика
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.random() * 50;
+          const newX = x + Math.cos(angle) * distance;
+          const newY = y + Math.sin(angle) * distance;
+          
+          particles.push({
+            x: newX,
+            y: newY,
+            vx: (Math.random() - 0.5) * 1.2,
+            vy: (Math.random() - 0.5) * 1.2,
+            size: 15 + Math.random() * 25,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            opacity: 0.6 + Math.random() * 0.4,
+            rotation: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.03,
+          });
+        }
+        // Ограничим максимальное количество частиц для производительности (не больше 200)
+        if (particles.length > 250) {
+          particles = particles.slice(-200);
+        }
+      }
+
+      // Обработчик клика по canvas (добавляем сердечки)
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;   // обычно 1, но на случай ретины
+        const scaleY = canvas.height / rect.height;
+        const mouseX = (e.clientX - rect.left) * scaleX;
+        const mouseY = (e.clientY - rect.top) * scaleY;
+        addHeartBurst(mouseX, mouseY, 12); // 12 новых сердечек
+      });
+
+      // Для мобильных — добавим касание
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const touchX = (touch.clientX - rect.left) * scaleX;
+        const touchY = (touch.clientY - rect.top) * scaleY;
+        addHeartBurst(touchX, touchY, 15);
+      }, { passive: false });
+
+      // ---------- КНОПКА "ОТКРЫТЬ ПОСЛАНИЕ" ----------
+      const btn = document.getElementById('openMessage');
+      const msg = document.getElementById('valentineMessage');
+      
+      btn.addEventListener('click', () => {
+        msg.classList.toggle('visible');
+        // При открытии тоже добавим немного сердечек для эффекта
+        addHeartBurst(width/2, height/2, 20);
+      });
+
+      // ---------- ЗАПУСК ----------
+      resizeCanvas(); // установит размер и создаст particles
+      animate();
+
+      // ---------- НЕБОЛЬШОЙ БОНУС: при движении мыши совсем чуть-чуть влияем на близкие сердечки? НЕ делаем, чтобы не перегружать, но добавим "магию" при наведении на кнопку (доп сердечки)
+      btn.addEventListener('mouseenter', () => {
+        // скромно добавим пару сердечек возле кнопки
+        const rect = btn.getBoundingClientRect();
+        const centerX = rect.left + rect.width/2;
+        const centerY = rect.top + rect.height/2;
+        addHeartBurst(centerX, centerY, 5);
+      });
+
+      // Дополнительно: создадим несколько частиц с задержкой для эффекта появления (уже есть в init)
+      // Но можно сразу добавить случайных через пару секунд
+      setTimeout(() => {
+        addHeartBurst(width * 0.3, height * 0.7, 6);
+        addHeartBurst(width * 0.7, height * 0.3, 6);
+      }, 300);
+    })();
+  </script>
 </body>
 </html>
